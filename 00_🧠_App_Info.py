@@ -1,88 +1,162 @@
-# app.py
 import streamlit as st
+from PIL import Image
 from pathlib import Path
-import json
-import pandas as pd
 
-
-
+# -------------------------------------------------
+# PAGE CONFIG
+# -------------------------------------------------
 st.set_page_config(
-    page_title="BCI Motor Imagery Classifier",
+    page_title="BCI Motor Imagery Project",
     page_icon="🧠",
     layout="wide"
 )
 
-# ------------------ HEADER ------------------
-st.title("🧠 BCI Motor Imagery Direction Classifier")
-st.markdown("""
-### **Real-time Left ↔ Right Motor Imagery Prediction**
-This application processes raw EEG signals, extracts neural features, and predicts the **intended cursor direction**  
-using a pre-trained machine learning model.
+# -------------------------------------------------
+# PROJECT DETAILS
+# -------------------------------------------------
+PROJECT_TITLE = "Characterizing the Brain Waves Associated with Controlled Hand Movement"
+SUBTITLE = "Brain–Computer Interface (BCI) using Motor Imagery"
 
-It is designed for brain–computer interface (BCI) systems where motor imagery  
-(mentally imagining left or right hand movement) is used to control digital interfaces.
+AUTHORS = (
+    "Sanjay R , "
+    "Mehaboob R, Pradeep V N, Radhika S Naik"
+)
 
----
-""")
+DEPARTMENT = "Department of Electrical and Electronics Engineering"
+INSTITUTE = "BMS Institute of Technology and Management"
+GUIDE = "Dr. Prashanth A. Athavale"
+YEAR = "2025"
 
-# ------------------ PROJECT OVERVIEW ------------------
-st.subheader("🎯 Project Overview")
-st.markdown("""
-This BCI system automatically:
+LOGO_PATH = "assets/logo.png"   # make sure logo exists
 
-- 🧩 **Segments EEG signals** to isolate the most meaningful 3-second motor-imagery window  
-- 📈 **Extracts 40+ temporal, spectral, and ERD-based features**  
-- 🤖 **Classifies the user’s mental command** as **Left→Right (LR)** or **Right→Left (RL)**  
-- 🎮 **Displays a real-time cursor demo** driven by the prediction  
-- 📄 **Generates structured PDF reports** for demonstrations and analysis  
+# -------------------------------------------------
+# BIG LOGO / BANNER
+# -------------------------------------------------
+if Path(LOGO_PATH).exists():
+    st.image(Image.open(LOGO_PATH), use_column_width=True)
 
-All training is done **offline** using 98 labeled EEG samples.  
-During testing, **any EDF file** can be uploaded — the model predicts direction purely from the signal.
-""")
+st.markdown("<br>", unsafe_allow_html=True)
+
+# -------------------------------------------------
+# TITLE SECTION (POSTER STYLE)
+# -------------------------------------------------
+st.markdown(
+    f"""
+    <div style="text-align:center;">
+        <h1 style="font-size:42px;">{PROJECT_TITLE}</h1>
+        <h3 style="font-weight:400;">{SUBTITLE}</h3>
+        <br>
+        <p style="font-size:20px;"><b>{AUTHORS}</b></p>
+        <p style="font-size:22px;"><b>{DEPARTMENT}</b></p>
+        <p style="font-size:22px;"><b>{INSTITUTE}</b></p>
+        <p style="font-size:18px;">Guide: <b>{GUIDE}</b></p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 st.markdown("---")
 
-# ------------------ SYSTEM STATUS ------------------
-st.subheader("📊 System Status")
+# -------------------------------------------------
+# INTRODUCTION
+# -------------------------------------------------
+st.subheader("🧠 Introduction")
+st.markdown("""
+The human brain generates electrical signals during movement, observation, and imagination.
+Using EEG signals recorded from the motor cortex, this project characterizes brain-wave
+patterns associated with **controlled hand movement** and **motor imagery**.
 
-# Check available data
-raw_count = len(list(Path("data/raw").glob("*.edf")))
-proc_count = len(list(Path("data/processed").glob("*_segment.npy")))
-feat_count = len(list(Path("data/features").glob("*.csv")))
-model_count = len(list(Path("models").glob("*.joblib")))
+The objective is to translate these neural signals into meaningful **directional commands**
+using signal processing and machine learning techniques.
+""")
 
-col1, col2, col3, col4 = st.columns(4)
+# -------------------------------------------------
+# EXPERIMENTAL PROCEDURE
+# -------------------------------------------------
+st.subheader("🔄 Experimental Procedure")
+st.markdown("""
+**Baseline → Cue → Movement Task → Break → Observation → Break → Motor Imagery Task**  
+*(Repeated for opposite direction)*
+""")
+
+# -------------------------------------------------
+# METHODOLOGY / PIPELINE
+# -------------------------------------------------
+st.subheader("⚙️ Methodology (ML Pipeline)")
+st.markdown("""
+1. **Raw EEG Recording** using Mitsar SmartBCI x24  
+2. **Auto-Segmentation** using ERD (optimal 3-second motor imagery window)  
+3. **Feature Extraction** (time-domain, frequency-domain, ERD-based features)  
+4. **Machine Learning Classification** (Left–Right vs Right–Left)  
+5. **Cursor Movement Simulation**
+""")
+
+# -------------------------------------------------
+# OBJECTIVES
+# -------------------------------------------------
+st.subheader("🎯 Objectives")
+col1, col2 = st.columns(2)
+
 with col1:
-    st.metric("📁 Raw EDF Files", raw_count)
+    st.markdown("""
+- Record EEG signals during controlled hand or cursor movement  
+- Detect unique brain-wave signatures linked to movement direction  
+""")
+
 with col2:
-    st.metric("✂️ Segmented Windows", proc_count)
-with col3:
-    st.metric("📊 Feature Datasets", feat_count)
-with col4:
-    st.metric("🤖 Saved Models", model_count)
+    st.markdown("""
+- Identify motor cortex activation using signal processing  
+- Build a BCI system that predicts user intention from EEG signals  
+""")
 
-if model_count > 0:
-    st.success("✅ System ready! You can now test predictions using the **Combined Demo** page.")
-else:
-    st.warning("⚠️ No trained model found. System will auto-train when first needed.")
-
-st.markdown("---")
-
-# ------------------ PROJECT PURPOSE ------------------
-st.subheader("💡 Purpose & Application")
+# -------------------------------------------------
+# EQUIPMENT USED
+# -------------------------------------------------
+st.subheader("🧰 Equipment Used")
 st.markdown("""
-This project demonstrates a practical implementation of **Brain–Computer Interfaces**  
-where users can control a system using **motor imagery alone**, without physical movement.
+- **Mitsar SmartBCI x24** – 24-channel EEG headset (dry electrodes)  
+- Wireless amplifier and Bluetooth adapter  
+- EEGStudio acquisition software  
+""")
 
-Potential applications include:  
-- Neuro-rehabilitation  
-- Assistive technologies  
-- Hands-free computer interaction  
-- Research on motor cortex activation  
+# -------------------------------------------------
+# RESULTS & OBSERVATIONS
+# -------------------------------------------------
+st.subheader("📊 Results & Observations")
+st.markdown("""
+- Clear differences in EEG rhythms, especially **mu and beta bands**, were observed  
+- Machine learning models successfully predicted movement direction  
+- Cursor demo responds dynamically based on model confidence  
+""")
 
-This system showcases the full pipeline from **raw EEG → features → prediction → cursor control**.
+# -------------------------------------------------
+# APPLICATIONS
+# -------------------------------------------------
+st.subheader("🚀 Applications")
+st.markdown("""
+- Neuro-rehabilitation systems  
+- Assistive devices  
+- Prosthetic control  
+- Hands-free Human–Computer Interaction (HCI)  
+- Neuroscience research  
+""")
+
+# -------------------------------------------------
+# SDG IMPACT
+# -------------------------------------------------
+st.subheader("🌍 SDG Impact")
+st.markdown("""
+- **SDG 3:** Good Health and Well-Being  
+- **SDG 9:** Industry, Innovation and Infrastructure  
+- **SDG 4:** Quality Education  
 """)
 
 st.markdown("---")
 
-st.caption("BCI Motor Imagery Classification System — Developed for academic demonstration and research use.")
+# -------------------------------------------------
+# FOOTER
+# -------------------------------------------------
+st.caption(f"""
+Work conducted at Computational Neuroscience & Engineering Research Laboratory, BMSIT&M  
+© {YEAR} | Team Lead: Sanjay R | (sanjay.r.4110@gmail.com)
+""")
