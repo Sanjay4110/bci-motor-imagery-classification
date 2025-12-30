@@ -1,0 +1,7 @@
+{
+  "model_name": "RF",
+  "test_accuracy": 0.4,
+  "training_date": "2025-12-13T11:37:47.476696",
+  "n_samples": 96,
+  "n_features": 82
+}
